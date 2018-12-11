@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>JS</title>
+</head>
+<body>
+	<div id="div_2" style="background-color: beige">Greetings Javascript</div>
+	<script>
+		(function(){
+			console.log('add')
+			console.info('page loaded');
+			setTimeout(function(){
+				div_2.style.backgroundColor = 'bisque';
+			}, 2000);
+			div1.addEventListener('click', function(e){
+				alert('If you click the page will add something');
+				var p3 = document.createElement('p');
+				p3.innerHTML = 'Add paragraph dynamic';
+				div1.appendChild(p3);
+			});
+			div_2.addEventListener('mouseenter', function(e){
+				div_2.style.cursor = 'grab';
+				div_2.style.backgroundColor = 'rouge';
+				div_2.style.opacity = 1.5;
+			});
+		})();
+	</script>
+</body>
+</html> 
