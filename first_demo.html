@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Javascript(JS)</title>
+</head>
+<body>
+	<div id="div_d" style="background-color: aqua">Hi Javascript</div>
+	<script>
+		window.addEventListener('load', onPageLoad);
+		function onPageLoad() {
+            alert("You clicked on the first Javascript example");
+			console.info('Page Loading');
+			setTimeout(function(){
+				div_d.style.backgroundColor = 'aquamarine';
+			}, 1000);
+			div_d.addEventListener('mouseenter', function(e){
+				div_d.style.cursor = 'cell';
+				div_d.style.backgroundColor = 'yellow';
+				div_d.style.opacity = 2;
+                div_d.style.alignContent = 'left';
+			});
+			
+		};
+	</script>
+</body>
+</html> 
