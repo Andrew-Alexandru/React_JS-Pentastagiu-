@@ -5,12 +5,21 @@
 	<title>Javascript test</title>
 </head>
 <body>
-	<div id="div1" style="background-color: red">Hello Javascript</div>
+	<div id="div1">Hello Javascript</div>
+	<div id="div1">Hello Javascript1</div>
+	<div id="div1">Hello Javascript2</div>
+	<div id="div1">Hello Javascript3</div>
+	<div id="div1">Hello Javascript4</div>
+	<button onclick="btnClicked()">Click me</button>
+	<a href="javascript_ex2.html">Second page</a>
 	<script>
 		//(function(){
 		//	console.log('add')
 		//})();
 		window.addEventListener('load', onPageLoad);
+		function btnClicked(){
+			console.log('Button clicked');
+		}
 		function onPageLoad() {
 			console.info('page loaded');
 			var div1 = document.getElementById('div1');
