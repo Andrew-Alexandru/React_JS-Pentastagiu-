@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Header from './components/header/header';
 import Content from './components/content/content';
+import Form from './components/form/form';
 import './App.css';
 
 const data = [
@@ -80,6 +81,8 @@ class App extends Component {
     super(props);
     this.handleClick= this.handleClick.bind(this);
     this.handleChangeTitle= this.handleChangeTitle.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChangeLocation = this.handleChangeLocation.bind(this);
     this.state = {
       name: 'Andrei',
       allData: data,
@@ -92,16 +95,25 @@ class App extends Component {
   handleChangeTitle(event){
     this.setState({title: event.target.value})
   }
+ // handler for submitting the form 
+  handleSubmit(event){
+    event.preventDefault();
+  }
+  //handler for change location
+  handleChangeLocation(event){
+    this.setState({value: event.target.value});
+  }
   render() {
     return (
-      <div className="App">
-      <Header />
-      <Content name =  {this.state.name} 
-       handleClick={this.handleClick} 
-       allData={this.state.allData} 
-       title={this.state.title}
-       handleChangeTitle={this.handleChangeTitle}
-       />
+      <div className="App" >
+        <Header />
+        <Content name =  {this.state.name} 
+        handleClick={this.handleClick} 
+        allData={this.state.allData} 
+        title={this.state.title}
+        handleChangeTitle={this.handleChangeTitle}
+        />
+        <Form />
       </div>
     );
   }
