@@ -3,15 +3,18 @@ import Header from './components/header/header';
 import Content from './components/content/content';
 import EditCard from './components/editCard/editCard';
 import './App.css';
+import { connect } from "react-redux";
+import { getProducts } from './Redux/Actions/products';
+import { startEditProduct, finishEditProduct } from './Redux/Actions/ui';
 
 class App extends Component {
   constructor(props){
     super(props);
     this.handleClick = this.handleClick.bind(this);
     this.onNameChange = this.onNameChange.bind(this);
+    this.onSave = this.onSave.bind(this);
     this.state = {
       name: 'Bogdan',
-      allData: [],
       title: 'Super Bogdan',
       setEditMode: false,
       dataById: {}
@@ -19,60 +22,66 @@ class App extends Component {
   }
 
   componentDidMount = async () => {
-    const response = await fetch('/products');
-    const data = await response.json();
-    this.setState({
-      allData: data
-    });
+    this.props._getAllProducts();
   }
   componentDidUpdate(){
     console.log(this.state.setEditMode)
   }
   handleClick(id) {
-    this.setState((prevState) => {
-      let data = {};
-      const newData = prevState.allData.map((item) =>{
-       if(item.id === id){
-         data = item;
-       }
-       return item;
-      });
-      return {
-        dataById: data,
-        allData: newData,
-        setEditMode: true,
-      }
-    }
-    );
-    console.log(id)
+    this.props._startEditProduct(id);
   }
   onNameChange(event){
-    const name = event.target.value;
+    const name = event.target.name;
+    const val = event.target.value;
+    
+    console.log(this.state.dataById[name]);
+    
     this.setState(prevState => {
-      prevState.dataById.name = name;
+      prevState.dataById[name] = val;
       return prevState;
-    })
-    console.log(event.target.value);
+    });
+  }
+
+  onSave() {
+    this.props._finishEditProduct();
   }
   
   render() {
-    console.log('app')
     return (
       <div className="App">
       <Header />
-      {this.state.setEditMode ? 
-      <EditCard {...this.state.dataById} onNameChange={this.onNameChange}/> : 
-      <Content 
-      name={this.state.name} 
-      handleClick={this.handleClick} 
-      allData={this.state.allData} 
-      title={this.state.title}
-      handleChangeTitle={()=> {}}
-      />
+      {
+        this.props.ui.productEdit ? 
+          <EditCard {...this.state.dataById} onNameChange={this.onNameChange} onSave={this.onSave}/> : 
+          this.props.ui.showSpinner ? 
+            <div className="loading-spinner"><div></div><div></div><div></div><div></div></div>
+          : 
+          <Content 
+            name={this.state.name} 
+            handleClick={this.handleClick} 
+            allData={this.props.products} 
+            title={this.state.title}
+            handleChangeTitle={()=> {}}
+          />
       }
       </div>
     );
   }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  products: state.products,
+  ui: state.ui
+});
+  
+const mapDispatchToProps = (dispatch) => ({
+    _getAllProducts: () => dispatch(getProducts()),
+    _startEditProduct: (id) => dispatch(startEditProduct(id)),
+    _finishEditProduct: () => dispatch(finishEditProduct())
+  });
+
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
