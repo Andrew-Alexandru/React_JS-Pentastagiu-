@@ -1,17 +1,27 @@
 import {
-  GET_PRODUCTS,
-  FETCH_PRODUCTS_SUCCESS,
-  FETCH_PRODUCT_SUCCESS,
-  FETCH_PRODUCTS_ERROR,
-  updateProducts,
-  getProductById, DELETE_PRODUCT,
-  SET_SAVE_EDIT_PRODUCT,
-  FETCH_PRODUCT_SAVE_EDIT_SUCCESS,
-  resetProduct,
+  GET_PRODUCTS,                 // get all products
+  FETCH_PRODUCTS_SUCCESS,       // get all products request returned with success
+  FETCH_PRODUCTS_ERROR,         // get all products request returned with error
+  FETCH_PRODUCT_SUCCESS,        // get a single product request returned with success
+  FETCH_PRODUCT_ERROR,          // get a single product request returned with error
+  SET_SAVE_EDIT_PRODUCT,                // save product request
+  FETCH_PRODUCT_SAVE_EDIT_SUCCESS,      // save product request returned with success
+  FETCH_PRODUCT_SAVE_EDIT_ERROR,        // save product request returned with error
+  DELETE_PRODUCT,                       // delete a single product request
+  FETCH_DELETE_PRODUCT_ERROR,           // delete product request returned with error
+  updateProducts,                       // we got all products then we add into store
+  getProductById,                       // we got the selected item and we put into store
+  resetProduct,                         // reset product
 } from "../Actions/products";
 import { apiRequest } from "../Actions/api";
-import {showLoader, hideLoader, PRODUCT_EDIT_STARTED, finishEditProduct} from "../Actions/ui";
+import {
+  showLoader,           // show spinner
+  hideLoader,           // hide spinner
+  finishEditProduct,    // hide edit panel
+  PRODUCT_EDIT_STARTED  // request for single product
+} from "../Actions/ui";
 
+// send request for all products
 export const getProductsFlow = ({ dispatch }) => next => action => {
   next(action);
 
@@ -28,23 +38,19 @@ export const getProductsFlow = ({ dispatch }) => next => action => {
     dispatch(showLoader());
   }
 };
-export const deleteProductById = ({ dispatch }) => next => action => {
+
+//put all products from response into store
+export const processProductsCollection = ({dispatch}) => next => action => {
   next(action);
 
-  if (action.type === DELETE_PRODUCT) {
-    dispatch(
-      apiRequest(
-        "/products",
-        "GET",
-        null,
-        FETCH_PRODUCTS_SUCCESS,
-        FETCH_PRODUCTS_ERROR
-      )
-    );
-    dispatch(showLoader());
+  if(action.type === FETCH_PRODUCTS_SUCCESS) {
+      dispatch(updateProducts(action.payload));
+      dispatch(hideLoader());
   }
-};
-export const productById= ({ dispatch }) => next => action => {
+}
+
+// send reuqest for single product
+export const productById = ({ dispatch }) => next => action => {
   next(action);
 
   if (action.type === PRODUCT_EDIT_STARTED) {
@@ -54,60 +60,77 @@ export const productById= ({ dispatch }) => next => action => {
         "GET",
         null,
         FETCH_PRODUCT_SUCCESS,
-        FETCH_PRODUCTS_ERROR
+        FETCH_PRODUCT_ERROR
       )
     );
     dispatch(showLoader());
   }
 };
-export const processProductsCollection = ({dispatch}) => next => action => {
-  next(action);
 
-  if(action.type === FETCH_PRODUCTS_SUCCESS) {
-    dispatch(updateProducts(action.payload));
-    dispatch(hideLoader());
-  }
-}
-export const processProductCollection = ({dispatch}) => next => action => {
-  next(action);
 
+// update a single product if request was success
+export const processProduct = ({dispatch}) => next => action => {
+  next(action);
   if(action.type === FETCH_PRODUCT_SUCCESS) {
-    dispatch(getProductById(action.payload));
-    dispatch(hideLoader());
+      dispatch(getProductById(action.payload));
+      dispatch(hideLoader());
   }
 }
 
-export const saveProductById= ({ dispatch, getState }) => next => action => {
+// send reuqest for single product
+export const deleteProduct = ({ dispatch }) => next => action => {
   next(action);
 
-  if (action.type === SET_SAVE_EDIT_PRODUCT) {
-    const state = getState();
-    dispatch(showLoader());
+  if (action.type === DELETE_PRODUCT) {
     dispatch(
       apiRequest(
-        "/products",
+        `/products/${action.payload}`,
+        "DELETE",
+        null,
+        GET_PRODUCTS,
+        FETCH_DELETE_PRODUCT_ERROR
+      )
+    );
+    dispatch(showLoader());
+  }
+};
+
+// Save edited product request
+export const saveProductById = ({ dispatch, getState }) => next => action => {
+  next(action);
+  if (action.type === SET_SAVE_EDIT_PRODUCT) {
+    dispatch(showLoader());
+    const state = getState();
+    dispatch(
+      apiRequest(
+        `/products`,
         "PUT",
-       {product: state.products.product},
+        { body: state.products.product },
         FETCH_PRODUCT_SAVE_EDIT_SUCCESS,
-        FETCH_PRODUCTS_ERROR
+        FETCH_PRODUCT_SAVE_EDIT_ERROR
       )
     );
   }
 };
+
 export const processSaveEditProductCollection = ({dispatch}) => next => action => {
   next(action);
 
   if(action.type === FETCH_PRODUCT_SAVE_EDIT_SUCCESS) {
     dispatch(hideLoader());
     dispatch(finishEditProduct());
-    dispatch(resetProduct());
+    dispatch(resetProduct(action.payload));
   }
 }
+
+
+
 export const productsMdl = [
-    getProductsFlow,
-    processProductsCollection,
-  productById,
-  processProductCollection,
-  saveProductById,
-  processSaveEditProductCollection,
+    getProductsFlow,              // send request for products
+    processProductsCollection,    // process when all products arrived
+    productById,                  // send request for single product
+    processProduct,               // process that single product
+    processSaveEditProductCollection,    // update the edited item in collection
+    saveProductById,                     // save product request
+    deleteProduct,                       // save product request          
 ];

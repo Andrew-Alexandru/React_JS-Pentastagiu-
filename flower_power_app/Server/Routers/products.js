@@ -49,7 +49,7 @@ router.get(
   async (request, response) => {
     console.log("Response function : OK");
     try {
-      const product = request.products.find(el => el.id === request.params.id);
+      const product = request.products.find(el => el.id == request.params.id);
 
       if (product) {
         return response.send(product);
@@ -86,17 +86,17 @@ router.post("/", prepareData, async (request, response) => {
  */
 router.put("/", prepareData, async (request, response) => {
   try {
-    const params = request.body.product;
-    if (!params) {
+    const product = request.body;
+    if (!product) {
       return response.send({ error: "Missing product param" });
     }
-
     const modifiedProducts = request.products.map(p => {
-      return p.id === params.id ? params : p;
+      return p.id === +product.id ? product : p;
     });
+
     await writeFileAsync(filePath, JSON.stringify(modifiedProducts));
 
-    return response.send(params);
+    return response.send(product);
   } catch (error) {
     return response.status(500).send(error.message);
   }
@@ -109,15 +109,16 @@ router.delete("/:id", prepareData, async (request, response) => {
   try {
     const idToDelete = request.params.id;
 
-    const productToDelete = request.products.find(p => p.id === idToDelete);
-    if (!productToDelete) {
+    const index = request.products.findIndex(p => p.id === +idToDelete);
+    if (index === -1) {
       return response.send({ error: "No product found" });
     }
-    request.products.remove(productToDelete);
+
+    request.products.splice(index, 1);
 
     await writeFileAsync(filePath, JSON.stringify(request.products));
 
-    return response.send({ message: `Deletet prooduct ${idToDelete}` });
+    return response.send({ message: `Deleted prooduct ${idToDelete}` });
   } catch (error) {
     return response.status(500).send(error.message);
   }

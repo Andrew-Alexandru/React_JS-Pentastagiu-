@@ -4,15 +4,14 @@ import Content from './components/content/content';
 import EditCard from './components/editCard/editCard';
 import './App.css';
 import { connect } from "react-redux";
-import { getProducts, setSaveProduct, setNameProduct } from './Redux/Actions/products';
-import { startEditProduct, finishEditProduct } from './Redux/Actions/ui';
+import { getProducts, deleteProduct } from './Redux/Actions/products';
+import { startEditProduct } from './Redux/Actions/ui';
 
 class App extends Component {
   constructor(props){
     super(props);
     this.handleClick = this.handleClick.bind(this);
-    this.onNameChange = this.onNameChange.bind(this);
-    this.onSave = this.onSave.bind(this);
+    this.deleteProduct = this.deleteProduct.bind(this);
     this.state = {
       name: 'Bogdan',
       title: 'Super Bogdan',
@@ -21,43 +20,35 @@ class App extends Component {
     }
   }
 
-  componentDidMount(){
+  componentDidMount = async () => {
     this.props._getAllProducts();
   }
-  componentDidUpdate(){
-    console.log(this.state.setEditMode)
-  }
+
   handleClick(id) {
     this.props._startEditProduct(id);
   }
-  onNameChange(event){
-    const name = event.target.value;
-    this.props._setNameProduct(name);
-  }
+
   deleteProduct(id) {
-    console.log(id)
+    console.log(id);
+    this.props._deleteProduct(id);
   }
 
-  onSave() {
-    this.props._setSaveProduct();
-  }
-  
+
   render() {
-    console.log(this.props)
+    console.log('app props', this.props);
     return (
       <div className="App">
       <Header />
       {
-        this.props.ui.productEdit ? 
-          <EditCard {...this.state.dataById} onNameChange={this.onNameChange} onSave={this.onSave} product={this.props.product}/> : 
-          this.props.ui.showSpinner ? 
+        this.props.ui.productEdit ?
+          <EditCard {...this.state.dataById} /> :
+          this.props.ui.showSpinner ?
             <div className="loading-spinner"><div></div><div></div><div></div><div></div></div>
-          : 
-          <Content 
-            name={this.state.name} 
-            handleClick={this.handleClick} 
-            allData={this.props.products}
-            product={this.props.product} 
+          :
+          <Content
+            name={this.state.name}
+            handleClick={this.handleClick}
+            products={this.props.products}
             title={this.state.title}
             deleteProduct={this.deleteProduct}
             handleChangeTitle={()=> {}}
@@ -69,18 +60,15 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  products: state.products.products,
   ui: state.ui,
-  product: state.products.product,
+  products: state.products.products
 });
-  
+
 const mapDispatchToProps = (dispatch) => ({
     _getAllProducts: () => dispatch(getProducts()),
     _startEditProduct: (id) => dispatch(startEditProduct(id)),
-    _finishEditProduct: () => dispatch(finishEditProduct()),
-    _setSaveProduct: () => dispatch(setSaveProduct()),
-    _setNameProduct: (name) => dispatch(setNameProduct(name))
-  });
+    _deleteProduct: (id) => dispatch(deleteProduct(id)),
+});
 
 
 export default connect(

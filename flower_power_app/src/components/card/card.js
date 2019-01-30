@@ -14,7 +14,8 @@ class Card extends React.PureComponent {
                 <img className="card-product-image" src={props.photoUrl} alt={props.name}/>
                 <h5>Price {props.unitPrice} EUR</h5>
                 <button className="btn add-to-cart">Add to cart</button>
-                <button className="btn add-to-cart" onClick={() =>props.handleClick(id)}>edit</button>
+                <button className="btn add-to-cart" onClick={() => props.handleClick(id)}>Edit</button>
+                <button className="btn add-to-cart" onClick={() => props.deleteProduct(id)}>Delete</button>
               </div>
         )
     }
