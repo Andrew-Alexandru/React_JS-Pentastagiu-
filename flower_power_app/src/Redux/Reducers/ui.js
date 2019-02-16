@@ -1,9 +1,4 @@
-import { 
-    SHOW_LOADER, 
-    HIDE_LOADER, 
-    PRODUCT_EDIT_STARTED, 
-    PRODUCT_EDIT_FINISHED 
-} from "../Actions/ui";
+import { SHOW_LOADER, HIDE_LOADER, PRODUCT_EDIT_STARTED, PRODUCT_EDIT_FINISHED } from "../Actions/ui";
 
 
 export function uiReducer(state = {
@@ -15,12 +10,12 @@ export function uiReducer(state = {
         case SHOW_LOADER:
             return {...state, showSpinner: true};
         case HIDE_LOADER:
-            return {...state, showSpinner: false};
+            return {...state, showSpinner: false};  
         case PRODUCT_EDIT_STARTED:
-            return {...state, productEdit: true};
+            return {...state, productEdit: true};     
         case PRODUCT_EDIT_FINISHED:
             return {...state, productEdit: false};     
-        default:
+        default: 
             return state;
     }
 }

@@ -1,21 +1,19 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
-import "./editCard.css";
+import "./addCard.css";
 
-class EditCard extends PureComponent {
+class AddCard extends PureComponent {
   render() {
     return (
       <div className="content-card modal">
         <label>Name</label>
         <input
-          value={this.props.product.name}
           name="name"
           type="text"
-          onChange={this.props.onNameChange}
+          onChange={this.props.nameChange}
         /> <br />
         <label>Description</label>
         <input
-          value={this.props.product.description}
           name="description"
           type="text"
           onChange={this.props.descriptionChange}
@@ -23,30 +21,29 @@ class EditCard extends PureComponent {
         <br />
         <label>Price</label>
         <input
-          value={this.props.product.unitPrice}
           name="price"
           type="text"
-          onChange={this.props.editProductPrice}
+          onChange={this.props.addPrice}
         />
         <br />
-        <label>Image</label>
+        <label>Image(.jpg)</label>
         <input
-          value={this.props.product.photoUrl}
           name="photoUrl"
           type="text"
-          onChange={this.props.editProductImage}
+          onChange={this.props.addImage}
         />
         <br />
-        <button onClick={this.props.onSave}>Save</button>
+        <button onClick={this.props.saveCard}>Save</button>
       </div>
     );
   }
 }
-EditCard.propTypes = {
+AddCard.propTypes = {
   name: PropTypes.string,
-  onNameChange: PropTypes.func,
+  nameChange: PropTypes.func,
   descriptionChange: PropTypes.func,
-  editProductPrice: PropTypes.func,
-  editProductImage: PropTypes.func,
+  saveCard: PropTypes.func,
+  addImage: PropTypes.func,
+  addPrice: PropTypes.func,
 };
-export default EditCard;
+export default AddCard;
