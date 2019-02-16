@@ -1,39 +1,62 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import "./addCard.css";
+import { withStyles } from '@material-ui/core/styles';
+import Input from '@material-ui/core/Input';
+
+
+const styles = theme => ({
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  input: {
+    margin: theme.spacing.unit,
+  },
+});
 
 class AddCard extends PureComponent {
   render() {
+    const props = this.props;
     return (
-      <div className="content-card modal">
-        <label>Name</label>
-        <input
-          name="name"
-          type="text"
-          onChange={this.props.nameChange}
-        /> <br />
-        <label>Description</label>
-        <input
-          name="description"
-          type="text"
-          onChange={this.props.descriptionChange}
-        />
-        <br />
-        <label>Price</label>
-        <input
-          name="price"
-          type="text"
-          onChange={this.props.addPrice}
-        />
-        <br />
-        <label>Image(.jpg)</label>
-        <input
-          name="photoUrl"
-          type="text"
-          onChange={this.props.addImage}
-        />
-        <br />
-        <button onClick={this.props.saveCard}>Save</button>
+      <div className={props.classes.container}>
+      <Input
+        defaultValue="Name"
+        className={props.classes.input}
+        inputProps={{
+          'aria-label': 'Description',
+        }}
+        onChange={this.props.nameChange}
+      />
+
+      <Input
+        defaultValue="Description"
+        className={props.classes.input}
+        inputProps={{
+          'aria-label': 'Description',
+        }}
+        onChange={this.props.descriptionChange}
+      />
+
+      <Input
+        defaultValue="Price"
+        className={props.classes.input}
+        inputProps={{
+          'aria-label': 'Description',
+        }}
+        onChange={this.props.addPrice}
+      />  
+      <Input
+        defaultValue="Image(.jpg)"
+        className={props.classes.input}
+        inputProps={{
+          'aria-label': 'Description',
+        }}
+        onChange={this.props.addImage}
+      />  
+        <button className="buttonClass" onClick={this.props.saveCard}>Save</button>
       </div>
     );
   }
@@ -46,4 +69,5 @@ AddCard.propTypes = {
   addImage: PropTypes.func,
   addPrice: PropTypes.func,
 };
-export default AddCard;
+
+export default withStyles(styles)(AddCard);
