@@ -1,73 +1,112 @@
 import React, { PureComponent } from "react";
-import PropTypes from "prop-types";
 import "./addCard.css";
-import { withStyles } from '@material-ui/core/styles';
-import Input from '@material-ui/core/Input';
+import {connect} from 'react-redux';
+import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import TextField from '@material-ui/core/TextField';
+import { saveProduct } from "../../Redux/Actions/products";
+import { resetProduct } from "../../Redux/Actions/products";
 
-
-const styles = theme => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  input: {
-    margin: theme.spacing.unit,
-  },
-});
 
 class AddCard extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: '',
+      description: '',
+      unitPrice: '',
+      photoUrl: '',
+    };
+  }
+  
+  onSubmit = (e) =>{
+    e.preventDefault();
+    const newProduct = this.state;
+    this.props._saveProduct(newProduct);
+  }
+  onChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }   
+
+  onExit = () => {
+    this.props._resetProduct();
+    this.props.history.push('/');
+  }
+
+ 
+
+
   render() {
-    const props = this.props;
     return (
-      <div className={props.classes.container}>
-      <Input
-        defaultValue="Name"
-        className={props.classes.input}
-        inputProps={{
-          'aria-label': 'Description',
-        }}
-        onChange={this.props.nameChange}
-      />
+      <form >
+      <div className="content-card modal">
+        <List>
+          <ListItem>
+            <TextField
+                name="name"
+                style={{ width: 300 }}
+                label="Name"
+                onChange={this.onChange}
+               />
+          </ListItem>
+          <Divider/>
+          <ListItem>
+              <TextField
+                name="description"
+                style={{ width: 300 }}
+                label="Description"
+                onChange={this.onChange}
+               />
+          </ListItem>
+          <Divider/>
+          <ListItem>
+            <TextField
+                name="unitPrice"
+                style={{ width: 300 }}
+                label="Price"
+                type="number"
+                onChange={this.onChange}
+               />
+          </ListItem>
+          <Divider/>
+         <ListItem>
+           <TextField
+                name="photoUrl"
+                style={{ width: 300 }}
+                label="Photo Url"
+                onChange={this.onChange}
+               />
+         </ListItem>
+       </List>
 
-      <Input
-        defaultValue="Description"
-        className={props.classes.input}
-        inputProps={{
-          'aria-label': 'Description',
-        }}
-        onChange={this.props.descriptionChange}
-      />
+        <Button variant="outlined" color="primary" onClick={this.onSubmit}
+        disabled={this.state.name === '' || this.state.description === '' || this.state.unitPrice === ''} >
+           Save
+        </Button>&nbsp;&nbsp;
+        
+          <Button variant="outlined" color="secondary" onClick={this.onExit}>
+            Exit add product
+          </Button>
 
-      <Input
-        defaultValue="Price"
-        className={props.classes.input}
-        inputProps={{
-          'aria-label': 'Description',
-        }}
-        onChange={this.props.addPrice}
-      />  
-      <Input
-        defaultValue="Image(.jpg)"
-        className={props.classes.input}
-        inputProps={{
-          'aria-label': 'Description',
-        }}
-        onChange={this.props.addImage}
-      />  
-        <button className="buttonClass" onClick={this.props.saveCard}>Save</button>
+        
       </div>
+      </form>
     );
   }
 }
-AddCard.propTypes = {
-  name: PropTypes.string,
-  nameChange: PropTypes.func,
-  descriptionChange: PropTypes.func,
-  saveCard: PropTypes.func,
-  addImage: PropTypes.func,
-  addPrice: PropTypes.func,
-};
 
-export default withStyles(styles)(AddCard);
+const mapStateToProps = (state) => state;
+
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  _saveProduct: (product) => dispatch(saveProduct(product, ownProps.history))  ,
+  _resetProduct:() => dispatch(resetProduct()),
+})
+
+export default connect(
+  mapStateToProps, 
+  mapDispatchToProps
+)(AddCard);

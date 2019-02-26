@@ -1,60 +1,74 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './card.css';
+import Card from '@material-ui/core/Card';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
-import {Card, CardMedia, CardContent, Button, CardActions, CardHeader} from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+import './card.css';
+import CardActions from '@material-ui/core/CardActions';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 
-const styles = {
+
+const styles = theme => ({
     card: {
-      maxWidth: 345,
+      maxWidth: 400,
     },
     media: {
-      height: 140,
+      height: 0,
+      paddingTop: '56.25%', // 16:9
     },
-    contentCard: {
-        width: '300px',
-        display: 'inline-block',
-        boxShadow: '0 1px 2px 0 rgba(0,0,0,.15)',
-        margin: '20px',
-        position: 'relative',
-        marginBottom: '50px',
-        padding: '20px',
-        transition: 'all .2s ease-in-out',
-        '&:hover':{
-            boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'
-        },
+    button: {
+      margin: theme.spacing.unit,
     },
-  };
+    input: {
+      display: 'none',
+    },
+
+  });
 
 class CardProduct extends React.PureComponent {
+   
     render() {
         const props = this.props;
         console.log('render Card', props.id);
         const id= props.id;
         return (
-        <Card className={this.props.classes.contentCard}>
-        <CardHeader
-          title={props.name}
-          subheader="February 2019"
-        />
+            <div className="content-card">
+        <Card>
+        <Typography gutterBottom variant="h3">
+           {props.name}
+          </Typography>
         <CardMedia
-        className = {this.props.classes.media}
-          image={props.photoUrl}
+          className={this.props.classes.media}
           title="Paella dish"
+          image={props.photoUrl}
         />
         <CardContent>
-        <span>{props.description}</span>
-        <h5>Price {props.unitPrice} EUR</h5>
+         <Typography component="p">
+          {props.description}
+         </Typography>
+         <Typography gutterBottom variant="h5" component="h2">
+          Price: {props.unitPrice} EUR
+         </Typography>
+        </CardContent>
         <CardActions>
-        <Button size="small" color="primary" onClick={() =>props.handleClick(id)}>
-          Edit
-        </Button>
-        <Button size="small" color="primary" onClick={() =>props.deleteProduct(id)}>
-          Delete
-        </Button>
-      </CardActions>
-          </CardContent>
+          <Button variant="contained" color="primary" className={this.props.classes.button}>
+            Add to cart
+          </Button>
+          <Button variant="contained" color="primary" onClick={() =>props.handleClick(id)} className={this.props.classes.button}>
+            Edit<EditIcon/>
+          </Button>
+          <Button variant="contained" color="secondary" onClick={() =>props.deleteProduct(id)} className={this.props.classes.button}>
+            Delete
+            <DeleteIcon/>
+          </Button>
+              Delete
+        </CardActions>
       </Card>
+              </div>
         )
     }
 }
